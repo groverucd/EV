@@ -144,7 +144,7 @@ export function KpiCards({ data, isLoading }: KpiCardsProps) {
         return (
           <div
             key={kpi.key}
-            className="group relative flex flex-col gap-1 p-5 rounded-2xl border border-border/60 bg-card hover:border-border hover:shadow-lg hover:shadow-background/20 transition-all duration-300 overflow-hidden"
+            className="group relative flex flex-col gap-1 p-5 rounded-2xl border border-border/60 bg-card hover:border-border transition-colors duration-300 overflow-hidden hover-lift"
           >
             <div className="flex items-center justify-between mb-1">
               <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">

@@ -76,12 +76,12 @@ export function FleetDashboard() {
       </div>
 
       {/* KPI Cards */}
-      <div className="mb-8">
+      <div className="mb-8 reveal-section" style={{ animationDelay: "100ms" }}>
         <KpiCards data={summary} isLoading={summaryLoading} />
       </div>
 
       {/* Filters */}
-      <div className="mb-6">
+      <div className="mb-6 reveal-section" style={{ animationDelay: "200ms" }}>
         <FleetFilters
           risk={risk}
           sort={sort}
@@ -93,7 +93,7 @@ export function FleetDashboard() {
       </div>
 
       {/* Content: Table + Live Incidents */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 reveal-section" style={{ animationDelay: "300ms" }}>
         {/* Table */}
         <div className="xl:col-span-3">
           <FleetTable

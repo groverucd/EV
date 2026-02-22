@@ -158,7 +158,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <header className="flex items-center justify-between h-14 px-6 border-b border-border/50 bg-background/80 backdrop-blur-sm shrink-0">
             <div className="flex items-center gap-3">
               <button
-                className="flex items-center gap-2.5 h-9 px-3.5 rounded-xl bg-secondary/80 border border-border/50 text-muted-foreground hover:text-foreground hover:border-border transition-all cursor-pointer focus-ring"
+                className="flex items-center gap-2.5 h-9 px-3.5 rounded-xl bg-secondary/80 border border-border/50 text-muted-foreground hover:text-foreground hover:border-border transition-all cursor-pointer focus-ring press-scale"
                 onClick={() => {
                   const event = new KeyboardEvent("keydown", {
                     key: "k",
