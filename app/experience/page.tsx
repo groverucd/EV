@@ -3,7 +3,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import Lenis from "lenis";
 import { LoadingScreen } from "@/components/experience/LoadingScreen";
 import { OverlayHUD } from "@/components/experience/OverlayHUD";
 import { useAmbientAudio } from "@/lib/audio/useAmbientAudio";
@@ -34,7 +33,8 @@ export default function ExperiencePage() {
   const [progress, setProgress] = useState(0);
   const [showIntro, setShowIntro] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<ScrollTrigger | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const triggerRef = useRef<any>(null);
 
   const autoTransitioned = useRef(false);
 
@@ -59,25 +59,6 @@ export default function ExperiencePage() {
       router.replace("/");
     }
   }, [prefersReduced, router]);
-
-  // Lenis smooth scrolling
-  useEffect(() => {
-    if (loading || prefersReduced) return;
-
-    const lenis = new Lenis({
-      duration: 1.4,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      touchMultiplier: 1.5,
-    });
-
-    lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
-
-    return () => {
-      lenis.destroy();
-    };
-  }, [loading, prefersReduced]);
 
   // Setup GSAP ScrollTrigger for camera scrub
   useEffect(() => {

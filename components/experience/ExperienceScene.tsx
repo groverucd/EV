@@ -8,46 +8,48 @@ import * as THREE from "three";
 /* ───── Camera Controller ───── */
 function CameraRig({ progress }: { progress: number }) {
   const { camera } = useThree();
-  const pathRef = useRef<THREE.CatmullRomCurve3 | null>(null);
-  const lookPathRef = useRef<THREE.CatmullRomCurve3 | null>(null);
 
-  useMemo(() => {
-    // Camera path: start wide, fly along the bridge, travel northeast toward "Davis"
-    pathRef.current = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0, 30, 120),     // Wide shot
-      new THREE.Vector3(0, 25, 80),      // Approaching bridge
-      new THREE.Vector3(0, 18, 40),      // On bridge
-      new THREE.Vector3(5, 14, 0),       // Mid bridge
-      new THREE.Vector3(15, 12, -40),    // Past bridge
-      new THREE.Vector3(40, 10, -80),    // Highway northeast
-      new THREE.Vector3(80, 8, -120),    // Arriving Davis
-      new THREE.Vector3(100, 6, -150),   // Final pullback
-    ]);
-    lookPathRef.current = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0, 10, 0),
-      new THREE.Vector3(0, 8, 0),
-      new THREE.Vector3(0, 6, -20),
-      new THREE.Vector3(10, 5, -40),
-      new THREE.Vector3(20, 5, -60),
-      new THREE.Vector3(50, 4, -100),
-      new THREE.Vector3(90, 3, -140),
-      new THREE.Vector3(100, 3, -160),
-    ]);
-  }, []);
+  // Camera path: start wide, fly along the bridge, travel northeast toward "Davis"
+  const cameraPath = useMemo(
+    () =>
+      new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, 30, 120),
+        new THREE.Vector3(0, 25, 80),
+        new THREE.Vector3(0, 18, 40),
+        new THREE.Vector3(5, 14, 0),
+        new THREE.Vector3(15, 12, -40),
+        new THREE.Vector3(40, 10, -80),
+        new THREE.Vector3(80, 8, -120),
+        new THREE.Vector3(100, 6, -150),
+      ]),
+    []
+  );
+
+  const lookPath = useMemo(
+    () =>
+      new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, 10, 0),
+        new THREE.Vector3(0, 8, 0),
+        new THREE.Vector3(0, 6, -20),
+        new THREE.Vector3(10, 5, -40),
+        new THREE.Vector3(20, 5, -60),
+        new THREE.Vector3(50, 4, -100),
+        new THREE.Vector3(90, 3, -140),
+        new THREE.Vector3(100, 3, -160),
+      ]),
+    []
+  );
 
   useFrame(() => {
-    if (!pathRef.current || !lookPathRef.current) return;
     const t = Math.max(0, Math.min(progress, 0.999));
-    const pos = pathRef.current.getPointAt(t);
-    const look = lookPathRef.current.getPointAt(t);
-    // Subtle camera drift
+    const pos = cameraPath.getPointAt(t);
+    const look = lookPath.getPointAt(t);
     const drift = Math.sin(Date.now() * 0.0003) * 0.15;
     camera.position.lerp(
       new THREE.Vector3(pos.x + drift, pos.y + drift * 0.5, pos.z),
       0.08
     );
-    const target = new THREE.Vector3(look.x, look.y, look.z);
-    camera.lookAt(target);
+    camera.lookAt(look);
   });
 
   return null;
@@ -218,13 +220,14 @@ function RoadPath() {
 }
 
 /* ───── Data Particles flowing along the road ───── */
+const PARTICLE_COUNT = 80;
+
 function DataParticles({ progress }: { progress: number }) {
-  const count = 80;
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const offsets = useMemo(
-    () => Array.from({ length: count }, () => Math.random()),
-    [count]
+    () => Array.from({ length: PARTICLE_COUNT }, () => Math.random()),
+    []
   );
 
   const roadPath = useMemo(
@@ -241,7 +244,7 @@ function DataParticles({ progress }: { progress: number }) {
 
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
       const t =
         ((offsets[i] + clock.elapsedTime * 0.05 + progress * 0.3) % 1);
       const pos = roadPath.getPointAt(t);
@@ -258,7 +261,7 @@ function DataParticles({ progress }: { progress: number }) {
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+    <instancedMesh ref={meshRef} args={[undefined, undefined, PARTICLE_COUNT]}>
       <sphereGeometry args={[1, 6, 6]} />
       <meshBasicMaterial color="#60a5fa" transparent opacity={0.7} />
     </instancedMesh>
@@ -321,8 +324,6 @@ function Lighting() {
         intensity={1.5}
         color="#ffeedd"
         castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
       />
       <pointLight position={[0, 30, 0]} intensity={0.4} color="#ffd4a0" />
       {/* Sun bloom effect */}
