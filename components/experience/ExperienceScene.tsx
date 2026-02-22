@@ -1,9 +1,12 @@
 "use client";
 
 import { useRef, useMemo } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
 import { Environment, Float } from "@react-three/drei";
 import * as THREE from "three";
+
+// R3F v9 requires explicit registration of Three.js elements
+extend(THREE);
 
 /* ───── Camera Controller ───── */
 function CameraRig({ progress }: { progress: number }) {
