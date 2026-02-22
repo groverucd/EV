@@ -14,7 +14,7 @@ interface FleetFiltersProps {
   onQueryChange: (query: string) => void;
 }
 
-const RISK_OPTIONS: { value: RiskFilter; label: string; icon?: React.ElementType; count?: string }[] = [
+const RISK_OPTIONS: { value: RiskFilter; label: string; icon?: React.ComponentType<{ className?: string }>; count?: string }[] = [
   { value: "all", label: "All" },
   { value: "critical", label: "Critical", icon: AlertOctagon, count: "700" },
   { value: "warning", label: "Warning", icon: AlertTriangle, count: "1.1K" },

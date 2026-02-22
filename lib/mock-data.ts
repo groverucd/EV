@@ -206,8 +206,8 @@ export function getMockChargerDetail(chargerId: string): ChargerDetail | null {
   ];
 
   const totalPct = contributors.reduce((s, c) => s + c.percent, 0);
-  contributors.forEach((c) => {
-    c.percent = Math.round((c.percent / totalPct) * 1000) / 10;
+  contributors.forEach((contrib) => {
+    contrib.percent = Math.round((contrib.percent / totalPct) * 1000) / 10;
   });
 
   const ttf: "within_24h" | "within_1_week" | "none" =

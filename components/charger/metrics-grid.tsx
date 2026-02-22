@@ -21,7 +21,7 @@ interface MetricDef {
   key: keyof ChargerMetrics;
   label: string;
   unit: string;
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   min: number;
   max: number;
   threshold: number;

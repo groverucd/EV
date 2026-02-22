@@ -18,7 +18,7 @@ interface ContributorsChartProps {
 
 const FEATURE_META: Record<
   string,
-  { label: string; icon: React.ElementType; description: string }
+  { label: string; icon: React.ComponentType<{ className?: string }>; description: string }
 > = {
   thermal_stress: {
     label: "Thermal Stress",

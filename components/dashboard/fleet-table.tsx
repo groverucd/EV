@@ -24,7 +24,7 @@ interface FleetTableProps {
   isLoading: boolean;
 }
 
-const CAUSE_ICONS: Record<string, React.ElementType> = {
+const CAUSE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "Thermal Stress Index": Flame,
   "Voltage Deviation": TrendingDown,
   "Error Density Spike": BarChart2,

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { AlertOctagon, Clock, ArrowRight, Radio } from "lucide-react";
+import { AlertOctagon, Clock, ArrowRight } from "lucide-react";
 
 interface Incident {
   charger_id: string;
