@@ -3,10 +3,44 @@
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
 import { Environment, Float } from "@react-three/drei";
-import * as THREE from "three";
+import {
+  Mesh,
+  BoxGeometry,
+  CylinderGeometry,
+  PlaneGeometry,
+  SphereGeometry,
+  TubeGeometry,
+  MeshStandardMaterial,
+  MeshBasicMaterial,
+  InstancedMesh,
+  AmbientLight,
+  DirectionalLight,
+  PointLight,
+  Fog,
+  Group,
+  Object3D,
+  Vector3,
+  CatmullRomCurve3,
+} from "three";
+import type { Mesh as TMesh, InstancedMesh as TInstancedMesh, PlaneGeometry as TPlaneGeometry } from "three";
 
-// R3F v9 requires explicit registration of Three.js elements
-extend(THREE);
+// R3F v9: register only the constructors we use
+extend({
+  Mesh,
+  BoxGeometry,
+  CylinderGeometry,
+  PlaneGeometry,
+  SphereGeometry,
+  TubeGeometry,
+  MeshStandardMaterial,
+  MeshBasicMaterial,
+  InstancedMesh,
+  AmbientLight,
+  DirectionalLight,
+  PointLight,
+  Fog,
+  Group,
+});
 
 /* ───── Camera Controller ───── */
 function CameraRig({ progress }: { progress: number }) {
@@ -15,30 +49,30 @@ function CameraRig({ progress }: { progress: number }) {
   // Camera path: start wide, fly along the bridge, travel northeast toward "Davis"
   const cameraPath = useMemo(
     () =>
-      new THREE.CatmullRomCurve3([
-        new THREE.Vector3(0, 30, 120),
-        new THREE.Vector3(0, 25, 80),
-        new THREE.Vector3(0, 18, 40),
-        new THREE.Vector3(5, 14, 0),
-        new THREE.Vector3(15, 12, -40),
-        new THREE.Vector3(40, 10, -80),
-        new THREE.Vector3(80, 8, -120),
-        new THREE.Vector3(100, 6, -150),
+      new CatmullRomCurve3([
+        new Vector3(0, 30, 120),
+        new Vector3(0, 25, 80),
+        new Vector3(0, 18, 40),
+        new Vector3(5, 14, 0),
+        new Vector3(15, 12, -40),
+        new Vector3(40, 10, -80),
+        new Vector3(80, 8, -120),
+        new Vector3(100, 6, -150),
       ]),
     []
   );
 
   const lookPath = useMemo(
     () =>
-      new THREE.CatmullRomCurve3([
-        new THREE.Vector3(0, 10, 0),
-        new THREE.Vector3(0, 8, 0),
-        new THREE.Vector3(0, 6, -20),
-        new THREE.Vector3(10, 5, -40),
-        new THREE.Vector3(20, 5, -60),
-        new THREE.Vector3(50, 4, -100),
-        new THREE.Vector3(90, 3, -140),
-        new THREE.Vector3(100, 3, -160),
+      new CatmullRomCurve3([
+        new Vector3(0, 10, 0),
+        new Vector3(0, 8, 0),
+        new Vector3(0, 6, -20),
+        new Vector3(10, 5, -40),
+        new Vector3(20, 5, -60),
+        new Vector3(50, 4, -100),
+        new Vector3(90, 3, -140),
+        new Vector3(100, 3, -160),
       ]),
     []
   );
@@ -49,7 +83,7 @@ function CameraRig({ progress }: { progress: number }) {
     const look = lookPath.getPointAt(t);
     const drift = Math.sin(Date.now() * 0.0003) * 0.15;
     camera.position.lerp(
-      new THREE.Vector3(pos.x + drift, pos.y + drift * 0.5, pos.z),
+      new Vector3(pos.x + drift, pos.y + drift * 0.5, pos.z),
       0.08
     );
     camera.lookAt(look);
@@ -139,19 +173,19 @@ function CableGeometry({
   towerHeight: number;
 }) {
   const points = useMemo(() => {
-    const pts: THREE.Vector3[] = [];
+    const pts: Vector3[] = [];
     const segments = 80;
     for (let i = 0; i <= segments; i++) {
       const t = i / segments;
       const z = -span / 2 + t * span;
       const sag = 18 * (4 * t * (1 - t));
       const y = towerHeight + 4 - sag;
-      pts.push(new THREE.Vector3(x, y, z));
+      pts.push(new Vector3(x, y, z));
     }
     return pts;
   }, [x, span, towerHeight]);
 
-  const curve = useMemo(() => new THREE.CatmullRomCurve3(points), [points]);
+  const curve = useMemo(() => new CatmullRomCurve3(points), [points]);
 
   return (
     <mesh>
@@ -163,11 +197,11 @@ function CableGeometry({
 
 /* ───── Ocean Waves (vertex animation) ───── */
 function AnimatedOcean() {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<TMesh>(null);
 
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
-    const geo = meshRef.current.geometry as THREE.PlaneGeometry;
+    const geo = meshRef.current.geometry as TPlaneGeometry;
     const pos = geo.attributes.position;
     const t = clock.elapsedTime;
     for (let i = 0; i < pos.count; i++) {
@@ -205,12 +239,12 @@ function AnimatedOcean() {
 /* ───── Road Path (from bridge to Davis) ───── */
 function RoadPath() {
   const roadPoints = useMemo(() => {
-    return new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0, 3.8, -60),
-      new THREE.Vector3(15, 3.8, -80),
-      new THREE.Vector3(40, 3.8, -100),
-      new THREE.Vector3(80, 3.8, -130),
-      new THREE.Vector3(100, 3.8, -155),
+    return new CatmullRomCurve3([
+      new Vector3(0, 3.8, -60),
+      new Vector3(15, 3.8, -80),
+      new Vector3(40, 3.8, -100),
+      new Vector3(80, 3.8, -130),
+      new Vector3(100, 3.8, -155),
     ]);
   }, []);
 
@@ -226,8 +260,8 @@ function RoadPath() {
 const PARTICLE_COUNT = 80;
 
 function DataParticles({ progress }: { progress: number }) {
-  const meshRef = useRef<THREE.InstancedMesh>(null);
-  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const meshRef = useRef<TInstancedMesh>(null);
+  const dummy = useMemo(() => new Object3D(), []);
   const offsets = useMemo(
     () => Array.from({ length: PARTICLE_COUNT }, () => Math.random()),
     []
@@ -235,12 +269,12 @@ function DataParticles({ progress }: { progress: number }) {
 
   const roadPath = useMemo(
     () =>
-      new THREE.CatmullRomCurve3([
-        new THREE.Vector3(0, 5, -60),
-        new THREE.Vector3(15, 5, -80),
-        new THREE.Vector3(40, 5, -100),
-        new THREE.Vector3(80, 5, -130),
-        new THREE.Vector3(100, 5, -155),
+      new CatmullRomCurve3([
+        new Vector3(0, 5, -60),
+        new Vector3(15, 5, -80),
+        new Vector3(40, 5, -100),
+        new Vector3(80, 5, -130),
+        new Vector3(100, 5, -155),
       ]),
     []
   );
