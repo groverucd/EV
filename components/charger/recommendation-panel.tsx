@@ -65,7 +65,6 @@ const WHY_REASONS = [
 function PlaybookCard({
   action,
   index,
-  urgency,
 }: {
   action: string;
   index: number;

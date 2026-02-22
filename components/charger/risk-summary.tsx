@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import type { ChargerDetail } from "@/lib/types";
-import { AlertTriangle, Clock, DollarSign, Shield, MapPin } from "lucide-react";
+import { Clock, DollarSign, Shield, MapPin, AlertTriangle } from "lucide-react";
 
 interface RiskSummaryProps {
   charger: ChargerDetail;
@@ -46,13 +46,6 @@ function AnimatedGauge({
       : level === "warning"
         ? "stroke-warning"
         : "stroke-safe";
-
-  const glowColor =
-    level === "critical"
-      ? "var(--critical)"
-      : level === "warning"
-        ? "var(--warning)"
-        : "var(--safe)";
 
   return (
     <div className="relative flex items-center justify-center w-36 h-36">

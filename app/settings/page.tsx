@@ -1,5 +1,5 @@
 import { AppShell } from "@/components/app-shell";
-import { Settings, Shield, Bell, Palette, Database } from "lucide-react";
+import { Shield, Bell, Palette, Database } from "lucide-react";
 
 export default function SettingsPage() {
   return (
