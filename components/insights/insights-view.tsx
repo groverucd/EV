@@ -44,7 +44,7 @@ function StatCard({
   iconColor,
   delay,
 }: {
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
   iconBg: string;
